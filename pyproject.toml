@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "ezprinting"
+version = "0.1.0"
+description = ""
+authors = ["mbello <marcelo.bello@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "*"
+google-auth = "^1.5"
+pycups = "^1.9"
+requests = "^2.19"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
