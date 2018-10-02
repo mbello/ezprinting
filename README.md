@@ -110,17 +110,17 @@ Having remote web applications automatically print to local printers can be diff
 
 The task I had at hand was to have a web-based ERP software automatically push print jobs to various printers on any organization. Before, users would click a "Print" button that would open a new tab on the user's browser with the PDF content displayed and again a "Print" button to actually print. While this workflow works, it adds a few more seconds and an additional click to what could be a one-click operation. Also, in some cases we wanted the printer to kick-off the action (i.e. automatically print shelf labels when a product price has changed, automatically print the picking list for a warehouse operator, etc).
 
-### When describing the problem, we figured that:
+#### When describing the problem, we figured that:
 1. We needed to standardize "the other side". Dealing with printer models, drivers, device discovery, etc was way out of scope and we did not need to reinvent the wheel;
 2. We needed remote access to those printers with little or no configuration of the network on the remote site (even setting port forwarding can be a challenge to some customers);
 3. We needed a solution that our clients could handle themselves with little to no support.
 
-### In the end, we decided that:
+#### In the end, we decided that:
 1. Google Cloud Print is the easiest solution that any customer could handle and would work everywhere. However, not all printers support GCP;
 2. If the customer wants to suport other kinds of printers (like 80mm thermal receipt printers, Brother's line of QL label printers,  and even legacy equipment), he could do so by configuring everything on a dedicated CUPS (virtual) server;
 3. Going CUPS does not mean abandoning GCP. With the official [Google Cloud Print Connector](https://github.com/google/cloud-print-connector), all printers on a CUPS server will be kept sincronized with GCP.
 
-### When testing our solution, we found out that:
+#### When testing our solution, we found out that:
 1. Setting up a CUPS servers to support any number of printers is easy, most printer manufacturers have official CUPS drivers and installing printers on CUPS is often faster than on any other solution (even Windows);
 2. Lots of clients have network-ready printers connected via USB. Having our clients move all those devices to plug directly to the network was the most difficult part;
 3. To avoid headaches, network printers should have static IP addresses which is what CUPS should point to. Do not rely on DNSSD or any other kind of discovery protocol.
