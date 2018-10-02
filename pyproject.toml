@@ -1,8 +1,14 @@
 [tool.poetry]
 name = "ezprinting"
 version = "0.2.0"
-description = ""
-authors = ["mbello <marcelo.bello@gmail.com>"]
+description = "Python package to easily print to a printer configured on either a CUPS server or Google Cloud Print."
+authors = ["Marcelo Bello"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/mbello/ezprinting"
+homepage = "https://github.com/mbello/ezprinting"
+keywords = ['google cloud print', 'cloud print', 'cups', 'printing']
+
 
 [tool.poetry.dependencies]
 python = "*"
