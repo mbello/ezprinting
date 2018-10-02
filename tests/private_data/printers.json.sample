@@ -1,0 +1,15 @@
+{
+  # REMOVE THESE COMMENTS ON YOUR printers.json FILE. JSON DOES NOT SUPPORT COMMENTS!
+  # Array containing 0 or more of ("printer name", "GCP printer id") tuples, for example:
+  # "gcp": [["custom_name_1", "gcp_printer_id_1"], ["custom_name_2", "gcp_printer_id_2"]],
+  # an empty array disables all GCP tests:
+  "gcp": [],
+
+  # Array containing 0 or more of ("printer name", "CUPS_name") tuples, for example:
+  # "cups": [["custom_name1", "cups_printer_name_1"], ["custom_name2", "cups_printer_name_2"]]
+  # An empty array disables all CUPS-specific tests:
+  "cups": []
+
+  # Note: the tests/data/print_tests.json file contains reference to printer names defined here
+  # so that you can define which documents will be sent to which printers in your tests.
+}

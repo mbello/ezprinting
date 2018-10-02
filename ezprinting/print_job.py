@@ -28,7 +28,9 @@ class PrintJob:
         self.title = title
         self.job_id = None
         self.submitted = False
-        self.submit_response = None
+        self.gcp_submit_response = None
+        self.gcp_submit_response_content = None
+        self.gcp_last_message = ""
         self.state = STATE0_DRAFT
 
         if not options:
@@ -44,11 +46,14 @@ class PrintJob:
 
         if self.print_server.is_cups:
             self.job_id = conn.createJob(self.printer.id, self.title, self.options)
-            a = conn.startDocument(self.printer.id, self.job_id, self.title, self.content_type, 1)
-            # Só funciona com pycups >= 1.9.74
-            b = conn.writeRequestData(self.content, len(self.content))
-            c = conn.finishDocument(self.printer.id)
-            self.submitted = True
+            conn.startDocument(self.printer.id, self.job_id, self.title, self.content_type, 1)
+            # Requires pycups >= 1.9.74, lower versions were buggy
+            status = conn.writeRequestData(self.content, len(self.content))
+            if (conn.finishDocument(self.printer.id)==0):
+                self.submitted = True
+                self.status = STATE2_QUEUED if status==100 else STATE0_DRAFT
+            return self.submitted
+
         elif self.print_server.is_gcp:
             # Must NOT set content-type as part of payload below
             payload = \
@@ -61,24 +66,24 @@ class PrintJob:
             # extension to not mess up content-type
             files = {'content': ('content', self.content, self.content_type)}
             response = conn.post('{}/submit'.format(GCP_BASE_URI), data=payload, files=files)
-            if submit_response.status_code == 200:
+            if response.status_code == 200:
                 self.submitted = True
-                self.submit_response = response
-                self.submit_response.content = json.loads(self.submit_response.content, strict=False)
+                self.gcp_submit_response = response
+                self.gcp_submit_response_content = json.loads(response.content, strict=False)
+                self.gcp_last_success = self.gcp_submit_response_content["success"]
 
-                with self.submit_response.content as c:
-                    if c.success == True:
-                        self.job_id = c.job.id
-                        self.state = c.semanticState.state
+                if self.gcp_last_success:
+                    self.job_id = self.gcp_submit_response_content["job"]["id"]
+                    self.state = self.gcp_submit_response_content["job"]["semanticState"]["state"]["type"]
+                    self.gcp_last_message = self.gcp_submit_response_content["message"]
             else:
                 pass
 
-            return response
+            return self.gcp_last_success
 
     @classmethod
-    def new_cups(cls, printer_name, content, content_type: str = DEFAULT_CONTENT_TYPE, title: str = GENERIC_TITLE,
-                 options=None, cups_host="localhost:631", cups_username="", cups_password=""):
-        ps = PrintServer.cups(cups_host=cups_host, cups_username=cups_username, cups_password=cups_password)
+    def new_cups(cls, printer_name, content, content_type: str = DEFAULT_CONTENT_TYPE, host: str="localhost:631", username: str="", password: str="", title: str=GENERIC_TITLE, options=None):
+        ps = PrintServer.cups(host=host, username=username, password=password)
         p = Printer(print_server=ps, name_or_id=printer_name)
         pj = cls(printer=p, content=content, content_type=content_type, title=title, options=options)
         pj.print()

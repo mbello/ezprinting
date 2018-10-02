@@ -1,0 +1,10 @@
+{
+    # REMOVE THESE COMMENTS FROM YOUR FINAL print_tests.json FILE. JSON DOES NOT SUPPORT COMMENTS!
+    # These arrays contain tuples with either (printer_index, "filename") or ("printer_name", "filename").
+    # On tests/private_data/printers.json, you defined 2 arrays with tuples ("printer_name", "name_or_id").
+    # The printer_index is the index of a printer in those arrays or you can refer to the "printer_name" instead.
+    # An empty array disables print tests.
+    # Note: if tests/private_data/printers.json has no printer definition, all tests will be disabled.
+    "gcp": [[0, "data/dummy.pdf"]],
+    "cups": [[0, "data/dummy.pdf"]]
+}
