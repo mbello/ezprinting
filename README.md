@@ -41,6 +41,7 @@ If **content** is in PDF there is no need to specify content_type. Auto detectio
 ### 2. Option two:
 ```
 from ezprinting import PrintServer, Printer, PrintJob
+import json
 
 with open('service_account.json', 'rb') as f:
     service_account = f.read()
@@ -71,6 +72,9 @@ if connection_ok:
     if printer_exists:
         pjob = PrintJob(printer=printer, content=content)
         success = pjob.print()
+        print('Print job submitted with success? {}'.format(success))
+        if success:
+            print('Print job id: {}'.format(pjob.job_id))
 ```
 
 ## Testing
@@ -124,6 +128,7 @@ The task I had at hand was to have a web-based ERP software automatically push p
 5. The missing piece of the puzzle was a python package to let us easily submit print jobs to those remote printers, and this is what this package tries to accomplish.
 
 ## Other (random) notes
+* pycups <=1.9.73 has a bug that prevents CUPS from working. You will see a filter failed or some kind of "document corrupted" message;
 * The Google Cloud Connector will keep all of your CUPS printers in sync with a Google Cloud Print account. However, the
 printer ids are not persistent, they may change if you make some changes to your CUPS printers (and do not have enough 
 experience to say when/why these ids change, but they may change). In the future we plan to support setting printer by 
