@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ezprinting"
-version = "0.2.2"
+version = "0.2.3"
 description = "Python package to easily print to a printer configured on either a CUPS server or Google Cloud Print."
 authors = ["Marcelo Bello"]
 license = "MIT"
