@@ -46,8 +46,8 @@ class PrintServer:
         return cls(name=name, server_type=SERVER_TYPE_CUPS, params_dict=d)
 
     @classmethod
-    def gcp(cls, service_account_json_file_as_string: str, name: str=PRINT_SERVER_GENERIC_NAME):
-        return cls(name=name, server_type=SERVER_TYPE_GOOGLE_CLOUD_PRINT, params_dict=json.loads(service_account_json_file_as_string, strict=False))
+    def gcp(cls, service_account: str, name: str=PRINT_SERVER_GENERIC_NAME):
+        return cls(name=name, server_type=SERVER_TYPE_GOOGLE_CLOUD_PRINT, params_dict=json.loads(service_account, strict=False))
 
     def test_connection(self):
         success = True
@@ -59,8 +59,6 @@ class PrintServer:
             except RuntimeError as e:
                 success = False
                 error_message = str(e)
-            else:
-                conn.close()
 
         elif self.is_gcp:
             try:

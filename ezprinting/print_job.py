@@ -90,9 +90,9 @@ class PrintJob:
         return pj
 
     @classmethod
-    def new_gcp(cls, service_account_json_file_as_string: str, printer_id: str, content,
+    def new_gcp(cls, service_account: str, printer_id: str, content,
                 content_type: str = DEFAULT_CONTENT_TYPE, title: str = GENERIC_TITLE, ticket=None):
-        ps = PrintServer.gcp(name="GCP", service_account_json_file_as_string=service_account_json_file_as_string)
+        ps = PrintServer.gcp(name="GCP", service_account=service_account)
         p = Printer(ps, printer_id)
         pj = cls(printer=p, content=content, content_type=content_type, title=title, options=ticket)
         pj.print()
