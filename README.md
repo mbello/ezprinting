@@ -5,6 +5,12 @@ GCP printing is achieved using **service account authentication** which is the b
 
 We plan to support other authentication means in the future (i.e. refresh tokens).
 
+## Installation ##
+pip install ezprinting
+or
+poetry add ezpriting
+
+pyCups is a dependency which needs libcups2-dev (this is the name on Ubuntu/Debian) to be installed (sudo apt install libcups2-dev).
 
 ## Quick Start Guide ##
 
