@@ -7,13 +7,12 @@ import json
 from google.oauth2 import service_account
 from google.auth.transport.requests import AuthorizedSession
 
-
 SERVER_TYPE_CUPS = "CUPS"
 SERVER_TYPE_GOOGLE_CLOUD_PRINT = "GCP"
 
-PRINT_SERVER_GENERIC_NAME="A Print Server"
+PRINT_SERVER_GENERIC_NAME = "A Print Server"
 
-DEFAULT_CUPS_HOST="localhost:631"
+DEFAULT_CUPS_HOST = "localhost:631"
 
 GCP_SCOPEs = ['https://www.googleapis.com/auth/cloudprint']
 GCP_BASE_URI = 'https://www.google.com/cloudprint'
@@ -49,7 +48,8 @@ class PrintServer:
 
     @classmethod
     def gcp(cls, service_account: str, name: str=PRINT_SERVER_GENERIC_NAME):
-        return cls(name=name, server_type=SERVER_TYPE_GOOGLE_CLOUD_PRINT, params_dict=json.loads(service_account, strict=False))
+        return cls(name=name, server_type=SERVER_TYPE_GOOGLE_CLOUD_PRINT,
+                   params_dict=json.loads(service_account, strict=False))
 
     def test_connection(self):
         success = True
@@ -78,13 +78,14 @@ class PrintServer:
         return success, error_message
 
     def open_connection(self):
-        if (self.is_cups):
+        if self.is_cups:
             cups.setServer(self._cups_host)
             cups.setUser(self._cups_user)
             cups.setPasswordCB(lambda a: self._cups_passwd)
             return cups.Connection()
-        elif (self.is_gcp):
-            credentials = service_account.Credentials.from_service_account_info(self._service_account_json, scopes=GCP_SCOPEs)
+        elif self.is_gcp:
+            credentials = service_account.Credentials.from_service_account_info(self._service_account_json,
+                                                                                scopes=GCP_SCOPEs)
             return AuthorizedSession(credentials)
         else:
             raise RuntimeError("Server type error!")
@@ -95,6 +96,7 @@ class PrintServer:
             return conn.getPrinters()
         elif self.is_gcp:
             session = self.open_connection()
-            r = session.get(GCP_BASE_URI + '/search?use_cdd=true&extra_fields=connectionStatus&q=&type=&connection_status=ALL')
+            r = session.get(GCP_BASE_URI +
+                            '/search?use_cdd=true&extra_fields=connectionStatus&q=&type=&connection_status=ALL')
             j = json.loads(r.content, strict=False)
             return j['printers']

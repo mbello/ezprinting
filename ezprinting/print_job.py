@@ -31,6 +31,7 @@ class PrintJob:
         self.gcp_submit_response = None
         self.gcp_submit_response_content = None
         self.gcp_last_message = ""
+        self.gcp_last_success = None
         self.state = STATE0_DRAFT
 
         if not options:
@@ -49,16 +50,16 @@ class PrintJob:
             conn.startDocument(self.printer.id, self.job_id, self.title, self.content_type, 1)
             # Requires pycups >= 1.9.74, lower versions were buggy
             status = conn.writeRequestData(self.content, len(self.content))
-            if (conn.finishDocument(self.printer.id)==0):
+            if conn.finishDocument(self.printer.id) == 0:
                 self.submitted = True
-                self.status = STATE2_QUEUED if status==100 else STATE0_DRAFT
+                self.state = STATE2_QUEUED if status == 100 else STATE0_DRAFT
             return self.submitted
 
         elif self.print_server.is_gcp:
             # Must NOT set content-type as part of payload below
             payload = \
-                {"printerid": self.printer.id, \
-                 "title": self.title, \
+                {"printerid": self.printer.id,
+                 "title": self.title,
                  "ticket": json.dumps(self.options)
                  }
             # Here, the second 'content' could be anything, it is there because
