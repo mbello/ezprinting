@@ -82,11 +82,14 @@ class PrintJob:
             return self.gcp_last_success
 
     @classmethod
-    def new_cups(cls, printer_name, content, content_type: str = DEFAULT_CONTENT_TYPE, host: str="localhost:631", username: str="", password: str="", title: str=GENERIC_TITLE, options=None):
+    def new_cups(cls, printer_name, content, content_type: str = DEFAULT_CONTENT_TYPE, host: str="localhost:631", username: str=None, password: str=None, title: str=GENERIC_TITLE, options=None):
+        if not username:
+            username = ""
+        if not password:
+            password = ""
         ps = PrintServer.cups(host=host, username=username, password=password)
         p = Printer(print_server=ps, name_or_id=printer_name)
         pj = cls(printer=p, content=content, content_type=content_type, title=title, options=options)
-        pj.print()
         return pj
 
     @classmethod
@@ -95,5 +98,4 @@ class PrintJob:
         ps = PrintServer.gcp(name="GCP", service_account=service_account)
         p = Printer(ps, printer_id)
         pj = cls(printer=p, content=content, content_type=content_type, title=title, options=ticket)
-        pj.print()
         return pj
