@@ -30,6 +30,8 @@ class PrintServer:
             self._cups_host = params_dict["cups_host"]
             self._cups_user = params_dict["cups_username"]
             self._cups_passwd = params_dict["cups_password"]
+            self._cups_user = "" if not self._cups_user else self._cups_user
+            self._cups_passwd = "" if not self._cups_passwd else self._cups_password
         elif (self._type == SERVER_TYPE_GOOGLE_CLOUD_PRINT):
             self.is_gcp = True
             self._service_account_json = params_dict
@@ -37,8 +39,8 @@ class PrintServer:
             raise ValueError("Invalid server_type.")
 
     @classmethod
-    def cups(cls, host=DEFAULT_CUPS_HOST, username="", password="", name=PRINT_SERVER_GENERIC_NAME):
-        d = {}
+    def cups(cls, host=DEFAULT_CUPS_HOST, username: str = None, password: str = None, name=PRINT_SERVER_GENERIC_NAME):
+        d = dict()
         d["cups_host"] = host
         d["cups_username"] = username
         d["cups_password"] = password
@@ -96,4 +98,3 @@ class PrintServer:
             r = session.get(GCP_BASE_URI + '/search?use_cdd=true&extra_fields=connectionStatus&q=&type=&connection_status=ALL')
             j = json.loads(r.content, strict=False)
             return j['printers']
-
